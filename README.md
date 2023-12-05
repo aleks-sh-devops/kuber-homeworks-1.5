@@ -281,7 +281,7 @@ Events:
   ----    ------  ----               ----                      -------
   Normal  Sync    64s (x2 over 79s)  nginx-ingress-controller  Scheduled for sync
 ```
-
+Проверяем доступность снаружи:
 ![ingress1](/screenshots/1.png)  
 ![ingress2](/screenshots/2.png)  
 
