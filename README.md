@@ -162,4 +162,125 @@ usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl exec -n dz5 pod-multitool
 3. Продемонстрировать доступ с помощью браузера или `curl` с локального компьютера.
 4. Предоставить манифесты и скриншоты или вывод команды п.2.
 
+Для начала врубаем контроллер ингресс на microk8s:  
+Статус:  
+```
+microk8s status
+
+microk8s is running
+high-availability: no
+  datastore master nodes: 10.50.41.125:19001
+  datastore standby nodes: none
+addons:
+  enabled:
+    dashboard            # (core) The Kubernetes dashboard
+    dns                  # (core) CoreDNS
+    ha-cluster           # (core) Configure high availability on the current node
+    helm                 # (core) Helm - the package manager for Kubernetes
+    helm3                # (core) Helm 3 - the package manager for Kubernetes
+    metallb              # (core) Loadbalancer for your Kubernetes cluster
+    metrics-server       # (core) K8s Metrics Server for API access to service metrics
+  disabled:
+    cert-manager         # (core) Cloud native certificate management
+    cis-hardening        # (core) Apply CIS K8s hardening
+    community            # (core) The community addons repository
+    gpu                  # (core) Automatic enablement of Nvidia CUDA
+    host-access          # (core) Allow Pods connecting to Host services smoothly
+    hostpath-storage     # (core) Storage class; allocates storage from host directory
+    ingress              # (core) Ingress controller for external access
+    kube-ovn             # (core) An advanced network fabric for Kubernetes
+    mayastor             # (core) OpenEBS MayaStor
+    minio                # (core) MinIO object storage
+    observability        # (core) A lightweight observability stack for logs, traces and metrics
+    prometheus           # (core) Prometheus operator for monitoring and logging
+    rbac                 # (core) Role-Based Access Control for authorisation
+    registry             # (core) Private image registry exposed on localhost:32000
+    rook-ceph            # (core) Distributed Ceph storage using Rook
+    storage              # (core) Alias to hostpath-storage add-on, deprecated
+```
+
+Включаем:
+```
+microk8s enable ingress
+
+Infer repository core for addon ingress
+Enabling Ingress
+ingressclass.networking.k8s.io/public created
+ingressclass.networking.k8s.io/nginx created
+namespace/ingress created
+serviceaccount/nginx-ingress-microk8s-serviceaccount created
+clusterrole.rbac.authorization.k8s.io/nginx-ingress-microk8s-clusterrole created
+role.rbac.authorization.k8s.io/nginx-ingress-microk8s-role created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-microk8s created
+rolebinding.rbac.authorization.k8s.io/nginx-ingress-microk8s created
+configmap/nginx-load-balancer-microk8s-conf created
+configmap/nginx-ingress-tcp-microk8s-conf created
+configmap/nginx-ingress-udp-microk8s-conf created
+daemonset.apps/nginx-ingress-microk8s-controller created
+Ingress is enabled
+```
+
+Проверяем:
+```
+microk8s status
+
+microk8s is running
+high-availability: no
+  datastore master nodes: 10.50.41.125:19001
+  datastore standby nodes: none
+addons:
+  enabled:
+    dashboard            # (core) The Kubernetes dashboard
+    dns                  # (core) CoreDNS
+    ha-cluster           # (core) Configure high availability on the current node
+    helm                 # (core) Helm - the package manager for Kubernetes
+    helm3                # (core) Helm 3 - the package manager for Kubernetes
+    ingress              # (core) Ingress controller for external access
+    metallb              # (core) Loadbalancer for your Kubernetes cluster
+    metrics-server       # (core) K8s Metrics Server for API access to service metrics
+  disabled:
+    cert-manager         # (core) Cloud native certificate management
+    cis-hardening        # (core) Apply CIS K8s hardening
+    community            # (core) The community addons repository
+    gpu                  # (core) Automatic enablement of Nvidia CUDA
+    host-access          # (core) Allow Pods connecting to Host services smoothly
+    hostpath-storage     # (core) Storage class; allocates storage from host directory
+    kube-ovn             # (core) An advanced network fabric for Kubernetes
+    mayastor             # (core) OpenEBS MayaStor
+    minio                # (core) MinIO object storage
+    observability        # (core) A lightweight observability stack for logs, traces and metrics
+    prometheus           # (core) Prometheus operator for monitoring and logging
+    rbac                 # (core) Role-Based Access Control for authorisation
+    registry             # (core) Private image registry exposed on localhost:32000
+    rook-ceph            # (core) Distributed Ceph storage using Rook
+    storage              # (core) Alias to hostpath-storage add-on, deprecated
+```
+
+Разворачиваем манифест ингресс:  
+```usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl apply -f ~/manifests/04_dz_kuber_1.5/05_ingress.ymlingress.networking.k8s.io/ingress-dz5 created
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$
+
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl describe ingress ingress-dz5 -n dz5
+Name:             ingress-dz5
+Labels:           <none>
+Namespace:        dz5
+Address:          127.0.0.1
+Ingress Class:    public
+Default backend:  <default>
+Rules:
+  Host                                  Path  Backends
+  ----                                  ----  --------
+  microk8s-03-ingress.oe.metinvest.com
+                                        /      svc-fe-dz5:fe-dz5 (10.1.62.211:80,10.1.62.212:80,10.1.62.213:80)
+                                        /api   svc-be-dz5:be-dz5 (10.1.62.216:80)
+Annotations:                            nginx.ingress.kubernetes.io/rewrite-target: /
+Events:
+  Type    Reason  Age                From                      Message
+  ----    ------  ----               ----                      -------
+  Normal  Sync    64s (x2 over 79s)  nginx-ingress-controller  Scheduled for sync
+```
+
+
 ------
