@@ -31,6 +31,20 @@
 4. Продемонстрировать, что приложения видят друг друга с помощью Service.
 5. Предоставить манифесты Deployment и Service в решении, а также скриншоты или вывод команды п.4.
 
+Создаем пространство имен под ДЗ:
+```
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl apply -f ~/manifests/04_dz_kuber_1.5/01_namespace.yml
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl get ns
+NAME              STATUS   AGE
+kube-system       Active   4d11h
+kube-public       Active   4d11h
+kube-node-lease   Active   4d11h
+default           Active   4d11h
+lesson4           Active   4d11h
+ingress           Active   4d11h
+dz5               Active   29s
+```
+
 ------
 
 ### Задание 2. Создать Ingress и обеспечить доступ к приложениям снаружи кластера
