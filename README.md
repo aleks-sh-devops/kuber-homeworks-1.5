@@ -272,7 +272,7 @@ Default backend:  <default>
 Rules:
   Host                                  Path  Backends
   ----                                  ----  --------
-  microk8s-03-ingress.oe.metinvest.com
+  microk8s-03-ingress.test.com
                                         /      svc-fe-dz5:fe-dz5 (10.1.62.211:80,10.1.62.212:80,10.1.62.213:80)
                                         /api   svc-be-dz5:be-dz5 (10.1.62.216:80)
 Annotations:                            nginx.ingress.kubernetes.io/rewrite-target: /
