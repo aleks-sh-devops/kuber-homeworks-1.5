@@ -116,6 +116,42 @@ Commercial support is available at
 </html>
 ```
 
+Теперь бэкенд:
+```
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl apply -f ~/manifests/04_dz_kuber_1.5/04_deploy_svc_multitool.yml
+deployment.apps/dpl-multitool-dz5 created
+service/svc-be-dz5 created
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl get pods -n dz5 -o wide
+NAME                                 READY   STATUS    RESTARTS   AGE   IP            NODE          NOMINATED NODE   READINESS GATES
+dpl-nginx-dz5-5cb659b4f5-6lfnn       1/1     Running   0          29m   10.1.62.212   microk8s-03   <none>           <none>
+dpl-nginx-dz5-5cb659b4f5-hl5k2       1/1     Running   0          29m   10.1.62.211   microk8s-03   <none>           <none>
+dpl-nginx-dz5-5cb659b4f5-t5n5h       1/1     Running   0          29m   10.1.62.213   microk8s-03   <none>           <none>
+pod-multitool-dz5                    1/1     Running   0          10m   10.1.62.215   microk8s-03   <none>           <none>
+dpl-multitool-dz5-64455fd7b6-qrsb7   1/1     Running   0          15s   10.1.62.216   microk8s-03   <none>           <none>
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl get deployments -n dz5 -o wide
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                    SELECTOR
+dpl-nginx-dz5       3/3     3            3           29m   nginx        nginx:1.19.2              app=fe-dz5
+dpl-multitool-dz5   1/1     1            1           44s   multitool    wbitt/network-multitool   app=be-dz5
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl get svc -n dz5 -o wide
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+svc-fe-dz5   ClusterIP   10.152.183.69    <none>        80/TCP    29m   app=fe-dz5
+svc-be-dz5   ClusterIP   10.152.183.129   <none>        80/TCP    57s   app=be-dz5
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl get ep -n dz5 -o wide
+NAME         ENDPOINTS                                      AGE
+svc-fe-dz5   10.1.62.211:80,10.1.62.212:80,10.1.62.213:80   30m
+svc-be-dz5   10.1.62.216:80                                 67s
+```
+
+И проверяем доступность с нашего тестового ПОДа:
+```
+usrcon@cli-k8s-01:~/manifests/04_dz_kuber_1.5$ kubectl exec -n dz5 pod-multitool-dz5 -- curl svc-be-dz5
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0WBITT Network MultiTool (with NGINX) - dpl-multitool-dz5-64455fd7b6-qrsb7 - 10.1.62.216 - HTTP: 80 , HTTPS: 443 . (Formerly praqma/network-multitool)
+100   150  100   150    0     0  36240      0 --:--:-- --:--:-- --:--:-- 50000
+```
+
+Успех!  
 
 ------
 
