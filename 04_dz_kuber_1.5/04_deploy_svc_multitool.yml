@@ -1,0 +1,31 @@
+apiVersion: apps/v1 # Версия api изменилось и теперь выглядит так
+kind: Deployment
+metadata:
+  name: dpl-multitool-dz5 # Имя деплоймента
+  namespace: dz5 # Пространство имен
+spec:
+  replicas: 1 # Количество реплик
+  selector: # Селектор на наши метки
+    matchLabels:
+      app: be-dz5
+  template: # Шаблон ПОДа
+    metadata:
+      labels: # Метки, которые будут установлены при запуске ПОДа из этого шаблона
+        app: be-dz5
+    spec:
+      containers:
+        - image: wbitt/network-multitool
+          name: multitool
+
+---
+apiVersion: v1 # Мы указываем для api сервера, что мы описываем объект из api версии 1
+kind: Service # Мы разворачиваем объект типа Сервис
+metadata:
+  name: svc-be-dz5 # Имя сервиса
+  namespace: dz5
+spec:
+  ports:
+    - name: be-dz5
+      port: 80 # Номер порта, на котором слушает наш сервис
+  selector:
+    app: be-dz5 # В селекторе указываем лейбл пода, чтобы он его нашел и подключился

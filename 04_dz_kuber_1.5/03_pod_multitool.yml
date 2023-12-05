@@ -1,0 +1,10 @@
+apiVersion: v1 # Мы указываем для api сервера, что мы описываем объект из api версии 1
+kind: Pod # Мы разворачиваем объект типа ПОД
+metadata:
+  name: pod-multitool-dz5 # Имя ПОДа
+  namespace: dz5
+spec:
+  containers:
+    - name: network-multitool-dz5 # Имя контейнера
+      image: wbitt/network-multitool # Образ контейнера
+## https://github.com/wbitt/Network-MultiTool
